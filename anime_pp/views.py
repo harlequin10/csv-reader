@@ -1,7 +1,9 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-
 import pandas as pd
+from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
+from django.conf import settings
+import os
 
 def index(request):
     book_data = None  # Initialize variable to hold book data
@@ -24,8 +26,21 @@ def index(request):
                 # You can pass this data to the template for rendering
                 book_data = df.head(max_rows).to_dict(orient='records')
 
-                # Calculate mean and median for each numeric column
-                column_stats = df.select_dtypes(include='number').agg(['mean', 'median'])
+                # Calculate mean, median, mode, standard deviation, range, max, min, and total rows for each numeric column
+                numeric_columns = df.select_dtypes(include='number').columns
+                column_stats = {}
+                for column in numeric_columns:
+                    if 'id' not in column.lower(): # Check if the column is not 'id'
+                        column_stats[column] = {
+                            'mean': df[column].mean(),
+                            'median': df[column].median(),
+                            'mode': df[column].mode().values[0],
+                            'std': df[column].std(),
+                            'min': df[column].min(),
+                            'max': df[column].max(),
+                            'range': df[column].max() - df[column].min(),
+                            'total_rows': len(df)
+                        }
 
                 file_selected = True  # Set flag to True as file was selected and processed
 
@@ -39,7 +54,34 @@ def analytics(request):
 
 
 def clean_data(request):
-    # Add your data cleaning logic here
-    # For example, you can use pandas to clean the DataFrame
-    cleaned_data = df  # Replace 'df' with your cleaned DataFrame
-    return HttpResponse('Data cleaned successfully')
+    if request.method == 'POST':
+        # Retrieve the uploaded file from the session
+        uploaded_file = request.session.get('uploaded_file')
+
+        if not uploaded_file:
+            return HttpResponse('No file uploaded')
+
+        # Read the uploaded file into a pandas DataFrame
+        try:
+            print("Reading CSV file...")
+            df = pd.read_csv(uploaded_file)
+            print("CSV file read successfully.")
+
+            # Add your data cleaning logic here
+            # For example, you can remove rows with missing values
+            print("Cleaning data...")
+            cleaned_data = df.dropna()
+            print("Data cleaned successfully.")
+
+            # Convert the cleaned DataFrame to a CSV file
+            cleaned_csv = cleaned_data.to_csv(index=False)
+
+            # Prepare the response to return the cleaned CSV file for download
+            response = HttpResponse(cleaned_csv, content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="cleaned_data.csv"'
+
+            return response
+        except Exception as e:
+            return HttpResponse(f'Error cleaning CSV file: {e}')
+
+    return HttpResponse('No file uploaded')

@@ -1,5 +1,3 @@
-/* css/style.css */
-
 /* Reset default margin and padding */
 body, h1, h2, table {
     margin: 0;
@@ -61,12 +59,18 @@ table th {
         padding: 10px;
     }
 }
+
 .scrollable-box {
     max-height: 400px; /* Set the maximum height of the scrollable box */
     overflow: auto; /* Enable scrolling for overflow content */
-    max-width: 600px;
     background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 880px;
+    z-index: 1000; /* Ensure it's above other content */
 }
+
 /* Mean values section styles */
 #mean-median-values {
     position: fixed;
@@ -76,7 +80,7 @@ table th {
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 700px;
+    width: 400px;
     z-index: 1000; /* Ensure it's above other content */
 }
 
@@ -94,4 +98,3 @@ table th {
         margin-top: 20px;
     }
 }
-

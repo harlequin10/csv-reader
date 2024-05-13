@@ -8,6 +8,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
     <section class="section">
         <h1><img src="{% static 'img/logo.png' %}" alt="Logo" width="40" height="35">CSV Analytics</h1>
         <h2 class="section-header">Import CSV</h2>
@@ -43,13 +46,71 @@
                 </table>
             </div>
         </section>
-        <section id="mean-median-values">
+        <section id="mean-median-values" class="scrollable-box">
             <h2 class="section-header">Column Statistics</h2>
             {% for column, stats in column_stats.items %}
-                <p>{{ column }}: Mean - {{ stats.mean }}, Median - {{ stats.median }}</p>
+                <p>{{ column }}:</p>
+                <ul>
+                    <li>Mean: {{ stats.mean }}</li>
+                    <li>Median: {{ stats.median }}</li>
+                    <li>Mode: {{ stats.mode }}</li>
+                    <li>Standard Deviation: {{ stats.std }}</li>
+                    <li>Min: {{ stats.min }}</li>
+                    <li>Max: {{ stats.max }}</li>
+                    <li>Range: {{ stats.range }}</li>
+                    <li>Total Rows: {{ stats.total_rows }}</li>
+                </ul>
             {% endfor %}
         </section>
         {% endif %}
+        <div id="cleaned-message"></div> <!-- Placeholder for displaying cleaned data message -->
     </div>
+    
+    <script>
+        function cleanData() {
+            // Get the CSRF token
+            const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+        
+            // Get the uploaded file
+            const fileInput = document.querySelector('input[type="file"]');
+            const file = fileInput.files[0];
+
+            // Check if a file is selected
+            if (!file) {
+                alert('Please select a file to clean.');
+                return;
+            }
+        
+            // Create a FormData object and append the file to it
+            const formData = new FormData();
+            formData.append('uploaded_file', file);
+        
+            // Send an AJAX request to clean the data
+            fetch('/clean_data/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response;
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                alert('Data cleaned successfully.');
+                location.reload();  // Reload the page to reflect the cleaned data
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
+    </script>
 </body>
 </html>
