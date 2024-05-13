@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Csv Analytics</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <section class="section">
+        <h1><img src="{% static 'img/logo.png' %}" alt="Logo" width="40" height="35">CSV Analytics</h1>
+        <h2 class="section-header">Import CSV</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="csv_file" accept=".csv">
+            <button type="submit">Import CSV</button>
+            <button type="button" onclick="cleanData()">Clean Data</button>
+        </form>
+    </section>
+    <div class="container">
+        <section class="section">
+            {% if file_selected %}
+            <h2 class="section-header">CSV Overview</h2>
+            <div class="scrollable-box">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            {% for column in book_data.0.keys %}
+                                <th>{{ column }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in book_data %}
+                            <tr>
+                                {% for value in row.values %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section id="mean-median-values">
+            <h2 class="section-header">Column Statistics</h2>
+            {% for column, stats in column_stats.items %}
+                <p>{{ column }}: Mean - {{ stats.mean }}, Median - {{ stats.median }}</p>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </div>
+</body>
+</html>

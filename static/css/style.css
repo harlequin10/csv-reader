@@ -1,0 +1,97 @@
+/* css/style.css */
+
+/* Reset default margin and padding */
+body, h1, h2, table {
+    margin: 0;
+    padding: 0;
+}
+
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-left: 0%;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.section-header {
+    color: #007bff; /* Bootstrap's primary color */
+}
+
+/* Form styles */
+form {
+    margin-bottom: 20px;
+}
+
+input[type="file"] {
+    margin-right: 10px;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table th, table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    text-align: left;
+    font-weight: bold;
+    background-color: #f9f9f9;
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+}
+.scrollable-box {
+    max-height: 400px; /* Set the maximum height of the scrollable box */
+    overflow: auto; /* Enable scrolling for overflow content */
+    max-width: 600px;
+    background-color: #fff;
+}
+/* Mean values section styles */
+#mean-median-values {
+    position: fixed;
+    top: 160px;
+    right: 20px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 700px;
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+#mean-median-values p {
+    margin: 5px 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+    #mean-median-values {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 20px;
+    }
+}
+
